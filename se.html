@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login Page<title>  <!-- BUG: closing tag wrong, should be </title> -->
+  <meta charset="UTF-8>    <!-- BUG: missing closing quote on charset value -->
+  <style>
+    body {
+      backround-color: #f0f0f0;   /* BUG: typo — 'backround' instead of 'background' */
+      font-family: Arial;
+      display: flex;
+      justify-content: center;
+    }
+
+    .form-box {
+      background: white;
+      padding: 30px
+      border-radius: 8px;          /* BUG: missing semicolon after padding */
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      width: 350px;
+    }
+
+    input {
+      widht: 100%;                 /* BUG: typo — 'widht' instead of 'width' */
+      padding: 10px;
+      margin-bottom: 14px;
+      border: 1px solid #ccc;
+      border-raduis: 4px;          /* BUG: typo — 'raduis' instead of 'radius' */
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-box">
+    <h2>Login</h2>
+    <form action="/login" method="GET">   <!-- BUG: should be method="POST" for login -->
+      <label>Email</label>
+      <input type="email" name="email" placeholder="Enter email">
+
+      <label>Password</label>
+      <input type="text" name="password" placeholder="Enter password">  <!-- BUG: type should be "password" not "text" -->
+
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <script>
+    function greetUser(name) {
+      console.log("Welcome, " + Name);   // BUG: 'Name' is undefined, should be 'name'
+    }
+
+    var score = 10;
+    if (score = 10) {                   // BUG: assignment '=' instead of comparison '==='
+      console.log("Perfect score!");
+    }
+
+    greetUser("Muhamed")               // BUG: missing semicolon
+  </script>
+
+</body>
+<!-- BUG: missing closing </html> tag -->
