@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Software Testing — Muhamed</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0b0b0f;
+      --surface: #13131a;
+      --border: #22222e;
+      --accent: #00e5a0;
+      --accent2: #6c63ff;
+      --text: #e8e8f0;
+      --muted: #6b6b80;
+      --danger: #ff4d6d;
+      --warn: #ffd166;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Background grid */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,160,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,160,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 24px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 64px;
+      animation: fadeDown 0.6s ease both;
+    }
+
+    .logo {
+      font-size: 13px;
+      font-family: 'Space Mono', monospace;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: var(--accent);
+      background: rgba(0,229,160,0.08);
+      border: 1px solid rgba(0,229,160,0.2);
+      padding: 6px 14px;
+      border-radius: 100px;
+    }
+
+    .status-badge span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* Hero */
+    .hero {
+      margin-bottom: 64px;
+      animation: fadeDown 0.6s 0.1s ease both;
+    }
+
+    .hero-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+
+    h1 .line2 {
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 500px;
+      line-height: 1.7;
+    }
+
+    /* Stats row */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 48px;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+
+    .stat {
+      background: var(--surface);
+      padding: 28px 24px;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* Test runner */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 32px;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-title::before {
+      content: '>';
+      color: var(--accent);
+    }
+
+    .run-btn {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .run-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .run-btn:active { transform: translateY(0); }
+
+    /* Test list */
+    .test-list { padding: 8px 0; }
+
+    .test-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      opacity: 0;
+      transform: translateX(-10px);
+      transition: background 0.15s;
+    }
+
+    .test-item:last-child { border-bottom: none; }
+    .test-item:hover { background: rgba(255,255,255,0.02); }
+
+    .test-item.visible {
+      animation: slideIn 0.3s ease forwards;
+    }
+
+    .icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .icon.pass { background: rgba(0,229,160,0.15); color: var(--accent); }
+    .icon.fail { background: rgba(255,77,109,0.15); color: var(--danger); }
+    .icon.warn { background: rgba(255,209,102,0.15); color: var(--warn); }
+    .icon.skip { background: rgba(108,99,255,0.15); color: var(--accent2); }
+
+    .test-name { flex: 1; color: var(--text); }
+    .test-time {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    /* Progress bar */
+    .progress-wrap {
+      padding: 20px 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 99px;
+      width: 0%;
+      transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Log panel */
+    .log-panel {
+      background: #09090e;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      line-height: 1.9;
+      color: var(--muted);
+      animation: fadeUp 0.6s 0.4s ease both;
+      min-height: 120px;
+    }
+
+    .log-panel .log-line { opacity: 0; animation: blink 0.1s ease forwards; }
+    .log-panel .log-acc { color: var(--accent); }
+    .log-panel .log-warn { color: var(--warn); }
+    .log-panel .log-err { color: var(--danger); }
+    .log-panel .log-dim { color: #333345; }
+
+    @keyframes blink {
+      to { opacity: 1; }
+    }
+
+    /* Animations */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    footer {
+      margin-top: 48px;
+      text-align: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      animation: fadeUp 0.6s 0.5s ease both;
+    }
+
+    @media (max-width: 600px) {
+      .stats { grid-template-columns: 1fr; }
+      header { flex-direction: column; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <div class="logo">// software-testing</div>
+      <div class="status-badge"><span></span> All systems operational</div>
+    </header>
+
+    <div class="hero">
+      <div class="hero-tag">v1.0.0 · test suite</div>
+      <h1>Test Runner<br><span class="line2">Dashboard</span></h1>
+      <p class="hero-sub">Automated test suite for Muhamed's software testing project. Click <strong style="color:var(--text)">Run Tests</strong> to execute all test cases.</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-num" id="passCount">0</span>
+        <span class="stat-label">Passed</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num" id="failCount">0</span>
+        <span class="stat-label">Failed</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num" id="totalCount">8</span>
+        <span class="stat-label">Total</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Test Cases</div>
+        <button class="run-btn" onclick="runTests()">▶ Run Tests</button>
+      </div>
+
+      <div class="test-list" id="testList">
+        <!-- Populated by JS -->
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-labels">
+          <span>Progress</span>
+          <span id="progressPct">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="log-panel" id="logPanel">
+      <div class="log-dim">// Run tests to see output...</div>
+    </div>
+
+    <footer>muhamed · software-testing · 2025</footer>
+
+  </div>
+
+  <script>
+    const tests = [
+      { name: 'login_form_validates_empty_fields()', result: 'pass', time: '12ms' },
+      { name: 'login_form_rejects_invalid_email()', result: 'pass', time: '8ms' },
+      { name: 'login_form_accepts_valid_credentials()', result: 'pass', time: '15ms' },
+      { name: 'register_duplicate_user_throws_error()', result: 'fail', time: '23ms' },
+      { name: 'password_min_length_enforced()', result: 'pass', time: '6ms' },
+      { name: 'session_token_expires_correctly()', result: 'warn', time: '44ms' },
+      { name: 'api_returns_404_for_unknown_route()', result: 'pass', time: '9ms' },
+      { name: 'ui_renders_without_crashing()', result: 'skip', time: '—' },
+    ];
+
+    const icons = {
+      pass: { symbol: '✓', cls: 'pass' },
+      fail: { symbol: '✗', cls: 'fail' },
+      warn: { symbol: '!', cls: 'warn' },
+      skip: { symbol: '○', cls: 'skip' },
+    };
+
+    const logMessages = [
+      { text: '$ running test suite...', cls: 'log-acc' },
+      { text: 'loading modules...', cls: '' },
+      { text: 'connecting to test environment...', cls: '' },
+      { text: '✓ login_form_validates_empty_fields passed (12ms)', cls: 'log-acc' },
+      { text: '✓ login_form_rejects_invalid_email passed (8ms)', cls: 'log-acc' },
+      { text: '✓ login_form_accepts_valid_credentials passed (15ms)', cls: 'log-acc' },
+      { text: '✗ register_duplicate_user_throws_error FAILED (23ms)', cls: 'log-err' },
+      { text: '  AssertionError: expected 409 but got 500', cls: 'log-err' },
+      { text: '✓ password_min_length_enforced passed (6ms)', cls: 'log-acc' },
+      { text: '⚠ session_token_expires_correctly — slow response (44ms)', cls: 'log-warn' },
+      { text: '✓ api_returns_404_for_unknown_route passed (9ms)', cls: 'log-acc' },
+      { text: '○ ui_renders_without_crashing skipped', cls: '' },
+      { text: '─────────────────────────────', cls: 'log-dim' },
+      { text: 'Results: 5 passed · 1 failed · 1 warn · 1 skipped', cls: '' },
+    ];
+
+    let ran = false;
+
+    function buildList() {
+      const list = document.getElementById('testList');
+      list.innerHTML = '';
+      tests.forEach((t, i) => {
+        const ic = icons[t.result];
+        const item = document.createElement('div');
+        item.className = 'test-item';
+        item.id = 'test-' + i;
+        item.innerHTML = `
+          <div class="icon ${ic.cls}">${ic.symbol}</div>
+          <span class="test-name">${t.name}</span>
+          <span class="test-time">${t.time}</span>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function runTests() {
+      if (ran) {
+        // Reset
+        ran = false;
+        document.getElementById('passCount').textContent = '0';
+        document.getElementById('failCount').textContent = '0';
+        document.getElementById('progressFill').style.width = '0%';
+        document.getElementById('progressPct').textContent = '0%';
+        document.getElementById('logPanel').innerHTML = '<div class="log-dim">// Running...</div>';
+        buildList();
+      }
+      ran = true;
+
+      const items = document.querySelectorAll('.test-item');
+      let completed = 0;
+      let passed = 0;
+      let failed = 0;
+
+      items.forEach((item, i) => {
+        setTimeout(() => {
+          item.classList.add('visible');
+          completed++;
+          const result = tests[i].result;
+          if (result === 'pass') passed++;
+          if (result === 'fail') failed++;
+
+          const pct = Math.round((completed / tests.length) * 100);
+          document.getElementById('progressFill').style.width = pct + '%';
+          document.getElementById('progressPct').textContent = pct + '%';
+          document.getElementById('passCount').textContent = passed;
+          document.getElementById('failCount').textContent = failed;
+        }, i * 220);
+      });
+
+      // Log output
+      const panel = document.getElementById('logPanel');
+      panel.innerHTML = '';
+      logMessages.forEach((msg, i) => {
+        setTimeout(() => {
+          const line = document.createElement('div');
+          line.className = 'log-line ' + (msg.cls || '');
+          line.textContent = msg.text;
+          panel.appendChild(line);
+        }, 300 + i * 180);
+      });
+    }
+
+    buildList();
+  </script>
+</body>
+</html>
